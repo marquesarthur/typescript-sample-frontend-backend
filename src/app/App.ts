@@ -6,6 +6,8 @@ import * as bodyParser from 'body-parser';
 import { nSQL } from "nano-sql";
 import { MySQLAdapter } from "nano-mysql";
 import {LoginController} from "../controllers/LoginController";
+import {UserController} from "../controllers/UserController";
+import {Roles} from "../validators/RolesValidator";
 
 
 // Creates and configures an ExpressJS web server.
@@ -41,11 +43,7 @@ class App {
 
 
     // placeholder route handler
-    router.get('/', (req, res, next) => {
-      res.json({
-        message: 'Hello World!'
-      });
-    });
+    router.get('/api/user/:id', Roles.check, UserController.profile );
     this.express.use('/', router);
   }
 
