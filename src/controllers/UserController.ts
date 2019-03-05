@@ -9,7 +9,7 @@ export class UserController {
 
     }
 
-    public static profile = (req, res, next) => {
+    public static profile = async (req, res, next) => {
         res.json(fakeuser);
     }
 }

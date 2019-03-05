@@ -5,25 +5,31 @@ import { Base64 } from 'js-base64';
 
 import app from '../src/app/App';
 
+import { nSQL } from "nano-sql";
+import { MySQLAdapter } from "nano-mysql";
+import { db } from "../src/db/database";
+import { doesNotReject } from 'assert';
+
 chai.use(chaiHttp);
 const expect = chai.expect;
 
 describe('POST /login', () => {
 
   let userCredentials = {
-    email: 'msarthur@example.com', 
+    email: 'msarthur@example.com',
     password: Base64.encode('secret')
   }
 
-  it('response should have a valid oauth token', () => {
-
+  it.only('response should have a valid oauth token', async () => {
     // CryptoJS.PBKDF2(password, salt, { keySize: 512/32, iterations: iterations });
+
 
     return chai.request(app).
       post('/login')
       .set('content-type', 'application/json')
       .send(userCredentials)
       .then(res => {
+        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res).to.be.json;
         expect(res.body.token).not.to.be.undefined;

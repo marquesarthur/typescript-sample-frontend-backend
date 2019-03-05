@@ -21,7 +21,6 @@ class App {
     this.express = express();
     this.middleware();
     this.routes();
-    // this.database();
   }
 
   // Configure Express middleware.
@@ -47,17 +46,17 @@ class App {
     this.express.use('/', router);
   }
 
-  // private database(): void {
-  //   nSQL([
-  //   ]).config({
-  //       mode: new MySQLAdapter({ // required
-  //               host: "localhost",
-  //               database: "test",
-  //               user: "root",
-  //               password: "secret"
-  //       }),
-  //   }).connect();
-  // }
+  private database(): void {
+    nSQL([
+    ]).config({
+        mode: new MySQLAdapter({ // required
+                host: "localhost",
+                database: "jabc",
+                user: "root",
+                password: "supersecret"
+        }),
+    }).connect();
+  }
 
 }
 
