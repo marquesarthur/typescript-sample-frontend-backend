@@ -7,8 +7,8 @@ export class LoginController {
 
     private _employeeService: EmployeeService;
 
-    constructor() {
-        this._employeeService = EmployeeService.getInstance();
+    constructor(_employeeService) {
+        this._employeeService = _employeeService;
     }
 
     public login = async (req, res, next) => {

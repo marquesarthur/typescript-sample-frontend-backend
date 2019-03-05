@@ -19,7 +19,7 @@ export class db {
             db._instance = new db();
         }
         return db._instance;
-    }
+    };
 
     // https://stackoverflow.com/questions/51046665/mocha-hangs-after-tests-have-finished
     public query = (sql, params) => {
@@ -34,7 +34,7 @@ export class db {
                 });
             });
         });
-    }
+    };
 
     private createConnectionPool = () => {
         const dbConfig = {
@@ -46,7 +46,7 @@ export class db {
             connectionLimit: 15
         };
         this.pool = createPool(dbConfig);
-    }
+    };
 
     public closeConnectionPool = () => {
         return new Promise((resolve, reject) => {
@@ -59,7 +59,7 @@ export class db {
                 resolve("success");
             }
         });
-    }
+    };
 
 }
 

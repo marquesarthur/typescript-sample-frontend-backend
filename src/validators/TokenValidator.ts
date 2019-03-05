@@ -1,13 +1,10 @@
 import { sign, verify } from 'jsonwebtoken';
 import { Base64 } from 'js-base64';
-import {EmployeeService} from "../services/EmployeeService";
 
-export class RolesValidator {
+export class TokenValidator {
 
-    private _employeeService: EmployeeService;
 
     constructor() {
-        this._employeeService = EmployeeService.getInstance();
     }
 
     public check = async (req, res, next) => {
@@ -36,17 +33,4 @@ export class RolesValidator {
             });
         }
     };
-
-
-    // TODO
-    private hasPermission = async (req, decoded) => {
-        let email = decoded["email"];
-        try {
-            let employee = await this._employeeService.getEmployeeByEmail(email);
-            return true;
-        } catch (err) {
-            return false;
-        }
-
-    }
 }

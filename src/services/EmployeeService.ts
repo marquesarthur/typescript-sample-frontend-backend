@@ -8,8 +8,8 @@ export class EmployeeService {
 
     private _db: db;
 
-    constructor() {
-        this._db = db.getInstance();
+    constructor(_db) {
+        this._db = _db;
     }
 
     public getEmployeeByEmail = async (email) => {
@@ -22,9 +22,19 @@ export class EmployeeService {
         }
     };
 
-    public static getInstance = () => {
+    public getEmployeeByID = async (id) => {
+        let statement = "SELECT * FROM employees WHERE id = ?";
+        try {
+            let result = await this._db.query(statement, [id]);
+            return Employee.fromDB(result);
+        } catch (err) {
+            return undefined;
+        }
+    };
+
+    public static getInstance = (_db) => {
         if (EmployeeService._instance === undefined) {
-            EmployeeService._instance = new EmployeeService();
+            EmployeeService._instance = new EmployeeService(_db);
         }
         return EmployeeService._instance;
     }

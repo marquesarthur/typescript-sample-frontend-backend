@@ -5,7 +5,10 @@ import * as bodyParser from 'body-parser';
 
 import {LoginController} from "../controllers/LoginController";
 import {EmployeeController} from "../controllers/EmployeeController";
-import {RolesValidator} from "../validators/RolesValidator";
+import {TokenValidator} from "../validators/TokenValidator";
+import {EmployeeService} from "../services/EmployeeService";
+import {EmployeeValidator} from "../validators/EmployeeValidator";
+import {db} from "../db/database";
 
 
 // Creates and configures an ExpressJS web server.
@@ -35,16 +38,23 @@ class App {
          * API endpoints */
         let router = express.Router();
 
-        let loginCtrl = new LoginController();
-        let employeeCtrl = new EmployeeController();
-        let rolesValidator = new RolesValidator();
+        // dependency injection
+
+        let _db = db.getInstance();
+
+        let _employeeService = EmployeeService.getInstance(_db);
+        let _employeeValidator = EmployeeValidator.getInstance(_db);
+
+        let loginCtrl = new LoginController(_employeeService);
+        let employeeCtrl = new EmployeeController(_employeeService, _employeeValidator);
+        let tokenValidator = new TokenValidator();
 
         router.post('/login', loginCtrl.login);
         router.post('/logout', loginCtrl.logout);
 
 
         // placeholder route handler
-        router.get('/api/v1/employee/:id', rolesValidator.check, employeeCtrl.profile);
+        router.get('/api/v1/employee/:id', tokenValidator.check, employeeCtrl.profile);
         this.express.use('/', router);
     }
 }
