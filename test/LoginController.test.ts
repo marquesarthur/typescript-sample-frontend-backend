@@ -5,8 +5,6 @@ import { Base64 } from 'js-base64';
 
 import app from '../src/app/App';
 
-import { nSQL } from "nano-sql";
-import { MySQLAdapter } from "nano-mysql";
 import { db } from "../src/db/database";
 import { doesNotReject } from 'assert';
 
@@ -70,7 +68,7 @@ describe('POST /login', () => {
 
   it('response should fail when wrong username is provided', () => {
 
-    userCredentials.email = "wrong@example.com"
+    userCredentials.email = "wrong@example.com";
 
     return chai.request(app).
       post('/login')
@@ -81,5 +79,10 @@ describe('POST /login', () => {
         expect(res).to.be.json;
         expect(res.body.success).to.be.false;
       });
+  });
+
+  after(() => {
+    let _db = db.getInstance();
+    return _db.closeConnectionPool();
   });
 });

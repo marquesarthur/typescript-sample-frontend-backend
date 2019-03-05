@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import {Base64} from 'js-base64';
-
+import { db } from "../src/db/database";
 import app from '../src/app/App';
 
 chai.use(chaiHttp);
@@ -25,7 +25,6 @@ describe('GET /api/v1/profile', () => {
             })
     });
 
-
     it('response should have a valid oauth token', () => {
         return chai.request(app).get('/api/v1/employee/1')
             .set('authorization', `Bearer ${token}`)
@@ -34,4 +33,8 @@ describe('GET /api/v1/profile', () => {
             });
     });
 
+    after(() => {
+        let _db = db.getInstance();
+        return _db.closeConnectionPool();
+    });
 });

@@ -28,17 +28,6 @@ export class RolesValidator {
                     req.decoded = decoded;
                     next();
                 }
-
-                // let hasPermission = await this.hasPermission(req, decoded);
-                // if (!hasPermission) {
-                //     return res.status(401).json({
-                //         success: false,
-                //         message: 'Token is not valid'
-                //     });
-                // }
-                // else {
-                //
-                // }
             });
         } else {
             return res.json({

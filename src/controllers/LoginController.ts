@@ -19,7 +19,7 @@ export class LoginController {
             try {
                 let employee = await this._employeeService.getEmployeeByEmail(email);
                 if (employee && email === employee.email && password === Base64.decode(employee.password)) {
-                    this.generateToken(req, res, next, {email: email, password: password})
+                    this.generateToken(req, res, next, employee)
                 } else {
                     res.status(403).json({
                         success: false,
@@ -43,7 +43,14 @@ export class LoginController {
     };
 
     public generateToken = async (req, res, next, data) => {
-        let token = sign(data,
+
+
+        let token = sign({
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+            },
             'secret in some server file',
             {
                 expiresIn: '24h' // expires in 24 hours

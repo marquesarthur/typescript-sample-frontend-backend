@@ -6,14 +6,16 @@ export class EmployeeService {
 
     private static _instance: EmployeeService;
 
-    constructor() {
+    private _db: db;
 
+    constructor() {
+        this._db = db.getInstance();
     }
 
     public getEmployeeByEmail = async (email) => {
-        let query = "SELECT * FROM employees WHERE email = ?"; // query database to get all the players
+        let statement = "SELECT * FROM employees WHERE email = ?";
         try {
-            let result = await db.pool(query, [email]);
+            let result = await this._db.query(statement, [email]);
             return Employee.fromDB(result);
         } catch (err) {
             return undefined;
