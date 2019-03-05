@@ -90,5 +90,11 @@ Select the test of preference, and run/debug it using **mocha**
 
 
 
+## References
 
+1. Backend [1](https://mherman.org/blog/developing-a-restful-api-with-node-and-typescript/)
+1. Docker [2](https://medium.com/@lvthillo/customize-your-mysql-database-in-docker-723ffd59d8fb)
+1. Mysql [3](https://github.com/mysqljs/mysql)
+1. Database issues [4](https://stackoverflow.com/questions/51046665/mocha-hangs-after-tests-have-finished)
+1. Json Web Token [5](https://jwt.io/introduction/), [6](https://medium.com/dev-bits/a-guide-for-adding-jwt-token-based-authentication-to-your-single-page-nodejs-applications-c403f7cf04f4)
 
