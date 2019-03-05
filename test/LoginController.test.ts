@@ -21,7 +21,7 @@ describe('POST /login', () => {
     password: Base64.encode('secret')
   }
 
-  it.only('response should have a valid oauth token', async () => {
+  it('response should have a valid oauth token', async () => {
     // CryptoJS.PBKDF2(password, salt, { keySize: 512/32, iterations: iterations });
 
 

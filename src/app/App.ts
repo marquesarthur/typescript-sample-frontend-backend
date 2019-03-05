@@ -3,11 +3,9 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 
-import {nSQL} from "nano-sql";
-import {MySQLAdapter} from "nano-mysql";
 import {LoginController} from "../controllers/LoginController";
-import {UserController} from "../controllers/UserController";
-import {Roles} from "../validators/RolesValidator";
+import {EmployeeController} from "../controllers/EmployeeController";
+import {RolesValidator} from "../validators/RolesValidator";
 
 
 // Creates and configures an ExpressJS web server.
@@ -21,7 +19,6 @@ class App {
         this.express = express();
         this.middleware();
         this.routes();
-        this.database();
     }
 
     // Configure Express middleware.
@@ -38,29 +35,18 @@ class App {
          * API endpoints */
         let router = express.Router();
 
-        router.post('/login', LoginController.login);
-        router.post('/logout', LoginController.logout);
+        let loginCtrl = new LoginController();
+        let employeeCtrl = new EmployeeController();
+        let rolesValidator = new RolesValidator();
+
+        router.post('/login', loginCtrl.login);
+        router.post('/logout', loginCtrl.logout);
 
 
         // placeholder route handler
-        router.get('/api/user/:id', Roles.check, UserController.profile);
+        router.get('/api/v1/employee/:id', rolesValidator.check, employeeCtrl.profile);
         this.express.use('/', router);
     }
-
-    private database(): void {
-        nSQL("table")
-            .model([])
-            .config({
-                mode: new MySQLAdapter({ // required
-                    host: "192.168.99.100",
-                    database: "jabc",
-                    user: "root",
-                    password: "supersecret"
-                }),
-
-            }).connect();
-    }
-
 }
 
 export default new App().express;
