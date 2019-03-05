@@ -2,11 +2,12 @@
 import { sign } from 'jsonwebtoken';
 import { Base64 } from 'js-base64';
 import { db } from "../db/database";
+import {Employee} from "../model/employee";
 
 const fakeuser = {
     email: 'msarthur@example.com',
     password: Base64.encode('secret')
-}
+};
 
 export class LoginController {
 
@@ -25,8 +26,8 @@ export class LoginController {
             let query = "SELECT * FROM employees WHERE email = ?"; // query database to get all the players
             try {
 
-                let result = await db.pool.query(query, [email]);
-                let user = result[0];
+                let result = await db.pool(query, [email]);
+                let user = Employee.fromDB(result);
                 if (user && email === user.email && password === Base64.decode(user.password)) {
                     LoginController.generateToken(req, res, next, { email: email, password: password })
                 } else {

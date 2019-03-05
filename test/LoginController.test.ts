@@ -10,6 +10,7 @@ import { MySQLAdapter } from "nano-mysql";
 import { db } from "../src/db/database";
 import { doesNotReject } from 'assert';
 
+
 chai.use(chaiHttp);
 const expect = chai.expect;
 
