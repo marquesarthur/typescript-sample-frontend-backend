@@ -13,7 +13,7 @@ export class EmployeeService {
     }
 
     public getEmployeeByEmail = async (email) => {
-        let statement = "SELECT * FROM employees WHERE email = ?";
+        let statement = "SELECT * FROM employee WHERE email = ?";
         try {
             let result = await this._db.query(statement, [email]);
             return Employee.fromDB(result);
@@ -23,7 +23,7 @@ export class EmployeeService {
     };
 
     public getEmployeeByID = async (id) => {
-        let statement = "SELECT * FROM employees WHERE id = ?";
+        let statement = "SELECT * FROM employee WHERE id = ?";
         try {
             let result = await this._db.query(statement, [id]);
             return Employee.fromDB(result);

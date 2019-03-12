@@ -4,13 +4,17 @@ export class Employee {
     public lastName: string;
     public email: string;
     public password: string;
+    public privilege: number;
+    public manager_id: number;
 
-    constructor(id, firstName, lastName, email, password) {
+    constructor(id, firstName, lastName, email, password, privilege, manager_id) {
         this.id = Number(id);
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.privilege = privilege;
+        this.manager_id = manager_id;
 
     }
 
@@ -26,8 +30,10 @@ export class Employee {
 
         return new Employee(employee["id"],
             employee["first_name"],
-            employee["Last_name"],
+            employee["last_name"],
             employee["email"],
-            employee["passwd"]);
+            employee["password"],
+            employee["privileges_id"],
+            employee["manager_id"]);
     }
 }

@@ -3,14 +3,12 @@ import {Employee} from "../model/employee";
 import {Roles} from "../model/roles";
 
 
-const fakeIDRole = {
+
+const ID_PRIVILEGE = {
     1: Roles.EMPLOYEE,
     2: Roles.MANAGER,
-    4: Roles.EMPLOYEE
-};
-
-const fakeTeam = {
-    2: [1]
+    3: Roles.HR,
+    4: Roles.ADMIN
 };
 
 
@@ -23,7 +21,7 @@ export class EmployeeValidator {
         this._db = _db;
     }
 
-    public canView = async (requester, data) => {
+    public canView = async (data, requester) => {
 
         if (requester.id === data.id) return true;
 
@@ -37,7 +35,7 @@ export class EmployeeValidator {
         // } catch (err) {
         //     return undefined;
         // }
-        let role = this.getFakeRole(requester.id);
+        let role = await this.getPrivileges(requester.id);
         switch (role) {
             case Roles.ADMIN:
                 return true;
@@ -59,20 +57,29 @@ export class EmployeeValidator {
         return EmployeeValidator._instance;
     };
 
-    private getFakeRole = (id) => {
+    private getPrivileges = async (id) => {
         let role = Roles.EMPLOYEE;
-        if (id in fakeIDRole) {
-            return fakeIDRole[id];
+        let statement = "SELECT * FROM employee WHERE id = ?";
+        try {
+            let result = await this._db.query(statement, [id]);
+            let requester = Employee.fromDB(result);
+            if (requester.privilege in ID_PRIVILEGE){
+                role = ID_PRIVILEGE[requester.privilege];
+            }
+        } catch (err) {
+            return undefined;
         }
         return role;
+
     };
 
-    private isManager = (managerID: any, employeeID: any) => {
-        // TODO: probably you want to fetch a list of IDs for the X employees under manager Y
-        if (managerID in fakeTeam) {
-            return employeeID in fakeTeam[managerID]
+    private isManager = async (managerID: any, employeeID: any) => {
+        let statement = "SELECT 1 FROM employee WHERE manager_id = ? AND id = ?";
+        try {
+            let result = await this._db.query(statement, [managerID, employeeID]);
+            return db.bool(result);
+        } catch (err) {
+            return false;
         }
-
-        return false;
     };
 }

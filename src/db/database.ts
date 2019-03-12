@@ -38,8 +38,8 @@ export class db {
 
     private createConnectionPool = () => {
         const dbConfig = {
-            // host: "192.168.99.100",
-            host: "localhost",
+            host: "192.168.99.100",
+            // host: "localhost",
             database: "jabc",
             user: "root",
             password: "supersecret",
@@ -60,6 +60,16 @@ export class db {
             }
         });
     };
+
+    public static bool = (result) => {
+        if (result.length === 0) {
+            return false;
+        }
+        if (result.length > 1) {
+            return false;
+        }
+        return true;
+    }
 
 }
 

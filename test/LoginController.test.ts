@@ -15,7 +15,7 @@ const expect = chai.expect;
 describe('POST /login', () => {
 
   let userCredentials = {
-    email: 'msarthur@example.com',
+    email: 'arthur@email.com',
     password: Base64.encode('secret')
   }
 
@@ -68,7 +68,7 @@ describe('POST /login', () => {
 
   it('response should fail when wrong username is provided', () => {
 
-    userCredentials.email = "wrong@example.com";
+    userCredentials.email = "wrong@email.com";
 
     return chai.request(app).
       post('/login')
