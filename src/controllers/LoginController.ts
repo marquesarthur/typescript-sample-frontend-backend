@@ -43,8 +43,6 @@ export class LoginController {
     };
 
     public generateToken = async (req, res, next, data) => {
-
-
         let token = sign({
                 id: data.id,
                 firstName: data.firstName,

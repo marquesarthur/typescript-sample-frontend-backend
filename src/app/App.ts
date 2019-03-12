@@ -9,6 +9,8 @@ import {TokenValidator} from "../validators/TokenValidator";
 import {EmployeeService} from "../services/EmployeeService";
 import {EmployeeValidator} from "../validators/EmployeeValidator";
 import {db} from "../db/database";
+import {DocumentService} from "../services/DocumentService";
+import {DocumentController} from "../controllers/DocumentController";
 
 
 // Creates and configures an ExpressJS web server.
@@ -43,10 +45,12 @@ class App {
         let _db = db.getInstance();
 
         let _employeeService = EmployeeService.getInstance(_db);
+        let _documentsService = DocumentService.getInstance(_db);
         let _employeeValidator = EmployeeValidator.getInstance(_db);
 
         let loginCtrl = new LoginController(_employeeService);
         let employeeCtrl = new EmployeeController(_employeeService, _employeeValidator);
+        let documentCtrl = new DocumentController(_employeeService, _documentsService, _employeeValidator);
         let tokenValidator = new TokenValidator();
 
         router.post('/login', loginCtrl.login);
@@ -55,6 +59,9 @@ class App {
 
         // placeholder route handler
         router.get('/api/v1/employee/:id', tokenValidator.check, employeeCtrl.profile);
+        router.post('/api/v1/employee', tokenValidator.check, employeeCtrl.create);
+        router.post('/api/v1/employee/:id/document/:docid', tokenValidator.check, documentCtrl.upload);
+        router.get('/api/v1/employee/:id/document/:docid', tokenValidator.check, documentCtrl.get);
         this.express.use('/', router);
     }
 }

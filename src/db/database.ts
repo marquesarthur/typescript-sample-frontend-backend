@@ -29,12 +29,28 @@ export class db {
                 if (err) reject(err);
                 conn.query(sql, params, (err, results) => {
                     if (err) reject(err);
-                    conn.release();
+                    conn.end();
                     resolve(results);
                 });
             });
         });
     };
+
+    public insert = (sql, params) => {
+        let that = this;
+        return new Promise((resolve, reject) => {
+            that.pool.getConnection((err, conn) => {
+                if (err) reject(err);
+                conn.query(sql, params, (err, results) => {
+                    if (err) reject(err);
+                    conn.end();
+                    resolve(results.insertId);
+                });
+            });
+        });
+    };
+
+
 
     private createConnectionPool = () => {
         const dbConfig = {

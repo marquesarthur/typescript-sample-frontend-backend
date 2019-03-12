@@ -16,8 +16,6 @@ describe('GET /api/v1/profile as Employee', () => {
 
     let token = undefined;
 
-
-
     it('employee should be able to see her own profile', () => {
         return chai.request(app).post('/login')
             .set('content-type', 'application/json')
@@ -30,7 +28,6 @@ describe('GET /api/v1/profile as Employee', () => {
                         expect(res.status).to.equal(200);
                     });
             });
-
     });
 
     it('employee should NOT be able to see others profile', () => {
@@ -96,6 +93,54 @@ describe('GET /api/v1/profile as Manager', () => {
             .set('authorization', `Bearer ${token}`)
             .then(res => {
                 expect(res.status).to.equal(403);
+            });
+    });
+
+    after(() => {
+        let _db = db.getInstance();
+        return _db.closeConnectionPool();
+    });
+});
+
+describe('POST /api/v1/employee as Admin', () => {
+
+    let userCredentials = {
+        email: 'arthur@email.com',
+        password: Base64.encode('secret')
+    };
+
+    let token = undefined;
+
+    before(() => {
+        return chai.request(app).post('/login')
+            .set('content-type', 'application/json')
+            .send(userCredentials)
+            .then(res => {
+                token = res.body.token;
+            })
+    });
+
+    // INSERT INTO  employee (first_name, last_name, password, SIN, email, role_id, privileges_id, manager, status) VALUES ('Joao', '-', 'c2VjcmV0', '12345678', 'joao@email.com', 2, 1, 1, 'ACTIVE');
+    it('admin should be able to insert enployee', () => {
+        let r = new Date().getTime();
+        let data = {
+            firstName: "Hello",
+            lastName: "World",
+            password: Base64.encode('secret'),
+            SIN: '12345656',
+            email: `unique${r}@example.com`,
+            role: 2,
+            privilege: 2,
+            manager: 1,
+            status: 'ACTIVE'
+        };
+        return chai.request(app).post('/api/v1/employee')
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(data)
+            .then(res => {
+                expect(res.status).to.equal(201); // means created
+                expect(res.body.id).not.to.be.undefined; // the response should contain an ID for the newly created entity
             });
     });
 

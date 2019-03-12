@@ -1,21 +1,18 @@
-export class Employee {
-    public id: number;
-    public firstName: string;
-    public lastName: string;
-    public email: string;
-    public password: string;
-    public privilege: number;
-    public manager_id: number;
+export interface IEmployee {
+    SIN?: string;
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    privilege?: number;
+    role?: number;
+    manager?: number;
+}
 
-    constructor(id, firstName, lastName, email, password, privilege, manager_id) {
-        this.id = Number(id);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.privilege = privilege;
-        this.manager_id = manager_id;
+export class Employee implements IEmployee {
 
+    constructor() {
     }
 
     static fromDB = (result) => {
@@ -27,13 +24,14 @@ export class Employee {
         }
 
         let employee = result[0];
-
-        return new Employee(employee["id"],
-            employee["first_name"],
-            employee["last_name"],
-            employee["email"],
-            employee["password"],
-            employee["privileges_id"],
-            employee["manager_id"]);
+        let x: IEmployee = new Employee();
+        x.id = Number(employee["id"]);
+        x.firstName = employee["first_name"];
+        x.lastName = employee["last_name"];
+        x.email = employee["email"];
+        x.password = employee["password"];
+        x.privilege = employee["privileges_id"];
+        x.manager = employee["manager_id"];
+        return x;
     }
 }

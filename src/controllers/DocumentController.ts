@@ -1,19 +1,21 @@
 import {EmployeeService} from "../services/EmployeeService";
 import {EmployeeValidator} from "../validators/EmployeeValidator";
-import {Employee, IEmployee} from "../model/employee";
+import {DocumentService} from "../services/DocumentService";
 
 
-export class EmployeeController {
+export class DocumentController {
 
     private _employeeService: EmployeeService;
+    private _documentsService: DocumentService;
     private _employeeValidator: EmployeeValidator;
 
-    constructor(_employeeService, _employeeValidator) {
+    constructor(_employeeService, _documentsService, _employeeValidator) {
         this._employeeService = _employeeService;
+        this._documentsService = _documentsService;
         this._employeeValidator = _employeeValidator;
     }
 
-    public profile = async (req, res, next) => {
+    public upload = async (req, res, next) => {
         let id = req.params.id;
 
         try {
@@ -35,16 +37,18 @@ export class EmployeeController {
                 message: 'Unable to fetch data from employee/requester'
             });
         }
-    }
+    };
 
-    public create = async (req, res, next) => {
-        let data = req.body;
+    public get = async (req, res, next) => {
+        let id = req.params.id;
+        let docid = req.params.docid;
+
         try {
+            let employee = await this._employeeService.getEmployeeByID(id);
             let requestedBy = await this._employeeService.getEmployeeByID(req.decoded.id);
-            if (await this._employeeValidator.canCreate(requestedBy)) {
-                let employee: IEmployee = JSON.parse(JSON.stringify(data));
-                let result = await this._employeeService.insertEmployee(employee);
-                res.status(201).json(result);
+
+            if (await this._employeeValidator.canView(employee, requestedBy)) {
+                res.json(employee);
             } else {
                 res.status(403).json({
                     success: false,
@@ -58,6 +62,5 @@ export class EmployeeController {
                 message: 'Unable to fetch data from employee/requester'
             });
         }
-    }
-
+    };
 }

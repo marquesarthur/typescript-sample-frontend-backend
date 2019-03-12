@@ -22,19 +22,7 @@ export class EmployeeValidator {
     }
 
     public canView = async (data, requester) => {
-
         if (requester.id === data.id) return true;
-
-        // TODO: some query to check roles of requester - 1. HR sees everything, 2. Manager. sees his team, 3. Employee sees themselves
-        // TODO: you probably don't want that as part of the token due to security issues, but as the secret is on the server side, it may be safe to do so
-        // TODO: in that case, you just do something like requester.role
-        // let statement = "SELECT * FROM employees WHERE email = ?";
-        // try {
-        //     let result = await this._db.query(statement, [email]);
-        //     return Employee.fromDB(result);
-        // } catch (err) {
-        //     return undefined;
-        // }
         let role = await this.getPrivileges(requester.id);
         switch (role) {
             case Roles.ADMIN:
@@ -45,6 +33,18 @@ export class EmployeeValidator {
                 return this.isManager(requester.id, data.id);
             case Roles.EMPLOYEE:
                 return requester.id === data.id;
+            default:
+                return false;
+        }
+    };
+
+    public canCreate = async (requester) => {
+        let role = await this.getPrivileges(requester.id);
+        switch (role) {
+            case Roles.ADMIN:
+                return true;
+            case Roles.HR:
+                return true;
             default:
                 return false;
         }
@@ -74,7 +74,7 @@ export class EmployeeValidator {
     };
 
     private isManager = async (managerID: any, employeeID: any) => {
-        let statement = "SELECT 1 FROM employee WHERE manager_id = ? AND id = ?";
+        let statement = "SELECT 1 FROM employee WHERE manager = ? AND id = ?";
         try {
             let result = await this._db.query(statement, [managerID, employeeID]);
             return db.bool(result);
