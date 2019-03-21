@@ -16,6 +16,11 @@ describe('GET /api/v1/profile as Employee', () => {
 
     let token = undefined;
 
+    before(() => {
+        let _db = db.getInstance();
+        return _db.newConnectionPool();
+    });
+
     it('employee should be able to see her own profile', () => {
         return chai.request(app).post('/login')
             .set('content-type', 'application/json')
@@ -62,12 +67,15 @@ describe('GET /api/v1/profile as Manager', () => {
     let token = undefined;
 
     before(() => {
-        return chai.request(app).post('/login')
-            .set('content-type', 'application/json')
-            .send(userCredentials)
-            .then(res => {
-                token = res.body.token;
-            })
+        let _db = db.getInstance();
+        return _db.newConnectionPool().then(() => {
+            return chai.request(app).post('/login')
+                .set('content-type', 'application/json')
+                .send(userCredentials)
+                .then(res => {
+                    token = res.body.token;
+                });
+        });
     });
 
     it('manager should be able to see her own profile', () => {
@@ -112,12 +120,15 @@ describe('POST /api/v1/employee as Admin', () => {
     let token = undefined;
 
     before(() => {
-        return chai.request(app).post('/login')
-            .set('content-type', 'application/json')
-            .send(userCredentials)
-            .then(res => {
-                token = res.body.token;
-            })
+        let _db = db.getInstance();
+        return _db.newConnectionPool().then(() => {
+            return chai.request(app).post('/login')
+                .set('content-type', 'application/json')
+                .send(userCredentials)
+                .then(res => {
+                    token = res.body.token;
+                })
+        });
     });
 
     // INSERT INTO  employee (first_name, last_name, password, SIN, email, role_id, privileges_id, manager, status) VALUES ('Joao', '-', 'c2VjcmV0', '12345678', 'joao@email.com', 2, 1, 1, 'ACTIVE');

@@ -30,7 +30,7 @@ export class EmployeeValidator {
             case Roles.HR:
                 return true;
             case Roles.MANAGER:
-                return this.isManager(requester.id, data.id);
+                return await this.isManager(requester.id, data.id);
             case Roles.EMPLOYEE:
                 return requester.id === data.id;
             default:
@@ -74,7 +74,7 @@ export class EmployeeValidator {
     };
 
     private isManager = async (managerID: any, employeeID: any) => {
-        let statement = "SELECT 1 FROM employee WHERE manager = ? AND id = ?";
+        let statement = "SELECT 1 FROM employee WHERE manager_id = ? AND id = ?";
         try {
             let result = await this._db.query(statement, [managerID, employeeID]);
             return db.bool(result);

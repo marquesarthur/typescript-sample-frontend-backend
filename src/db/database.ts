@@ -3,11 +3,20 @@ import {promisify} from 'util';
 
 import {Pool} from "mysql";
 
+const dbConfig = {
+    host: "192.168.99.100",
+    // host: "localhost",
+    database: "jabc",
+    user: "root",
+    password: "supersecret",
+    connectionLimit: 15
+};
 
 export class db {
     
     private static _instance: db;
     private pool: Pool;
+
     
     constructor() {
         this.createConnectionPool();
@@ -29,7 +38,7 @@ export class db {
                 if (err) reject(err);
                 conn.query(sql, params, (err, results) => {
                     if (err) reject(err);
-                    conn.end();
+                    conn.release();
                     resolve(results);
                 });
             });
@@ -43,7 +52,7 @@ export class db {
                 if (err) reject(err);
                 conn.query(sql, params, (err, results) => {
                     if (err) reject(err);
-                    conn.end();
+                    conn.release();
                     resolve(results.insertId);
                 });
             });
@@ -53,17 +62,10 @@ export class db {
 
 
     private createConnectionPool = () => {
-        const dbConfig = {
-            host: "192.168.99.100",
-            // host: "localhost",
-            database: "jabc",
-            user: "root",
-            password: "supersecret",
-            connectionLimit: 15
-        };
         this.pool = createPool(dbConfig);
     };
 
+    // necessary for testing purposes
     public closeConnectionPool = () => {
         return new Promise((resolve, reject) => {
             if (this.pool) {
@@ -74,6 +76,15 @@ export class db {
             } else {
                 resolve("success");
             }
+        });
+    };
+
+    // necessary for testing purposes
+    public newConnectionPool = () => {
+        let that = this;
+        return new Promise((resolve, reject) => {
+            that.pool = createPool(dbConfig);
+            resolve("success");
         });
     };
 

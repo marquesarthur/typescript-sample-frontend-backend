@@ -6,7 +6,6 @@ import { Base64 } from 'js-base64';
 import app from '../src/app/App';
 
 import { db } from "../src/db/database";
-import { doesNotReject } from 'assert';
 
 
 chai.use(chaiHttp);
@@ -17,7 +16,12 @@ describe('POST /login', () => {
   let userCredentials = {
     email: 'arthur@email.com',
     password: Base64.encode('secret')
-  }
+  };
+
+    before(() => {
+        let _db = db.getInstance();
+        return _db.newConnectionPool();
+    });
 
   it('response should have a valid oauth token', async () => {
     // CryptoJS.PBKDF2(password, salt, { keySize: 512/32, iterations: iterations });

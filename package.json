@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "test": "mocha --require node_modules/ts-node/register 'test/**/*.test.ts'",
+    "test": "mocha --require ts-node/register 'test/**/*.test.ts'",
     "build": "gulp scripts"
   },
   "devDependencies": {
