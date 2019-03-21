@@ -26,7 +26,7 @@
     "typescript": "^3.3.3333"
   },
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/app/index.js",
     "test": "mocha --require ts-node/register 'test/**/*.test.ts'",
     "build": "gulp scripts"
   },
