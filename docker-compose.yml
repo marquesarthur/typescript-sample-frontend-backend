@@ -8,7 +8,6 @@ services:
       - "49160:3000"
     expose:
       - "3000"
-    network_mode: "host"
     depends_on:
       - database
   database:
