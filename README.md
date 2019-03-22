@@ -144,4 +144,6 @@ Create gulp task that does all the bundling:
 1. Mysql [3](https://github.com/mysqljs/mysql)
 1. Database issues [4](https://stackoverflow.com/questions/51046665/mocha-hangs-after-tests-have-finished)
 1. Json Web Token [5](https://jwt.io/introduction/), [6](https://medium.com/dev-bits/a-guide-for-adding-jwt-token-based-authentication-to-your-single-page-nodejs-applications-c403f7cf04f4)
+1. Serving static files [7](https://appdividend.com/2018/11/24/how-to-serve-static-files-in-express/)
+1. Building the docker-compose [8](https://github.com/matfin/docker-node-app) [9](https://blog.morizyun.com/javascript/docker-dockerfile-basic-nodejs.html) [10](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
 
