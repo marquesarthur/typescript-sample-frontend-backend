@@ -28,62 +28,109 @@ docker-machine env
 eval $(docker-machine env)
 ```
 
-Go to the docker config folder and run
+### Working localy
+
+Just start the database container
 
 ```
-cd docker-config
-docker build -t jabc-mysql .
-```
-
-**IMPORTANT** if there are errors in your SQL scripts, the image will fail
-
-Once the docker image has been built, you have to start it. I'm running the command below in non daemon mode because I want to see possible errors
-
-```
-docker run -p 3306:3306 --name jabc-mysql -e MYSQL_ROOT_PASSWORD=supersecret jabc-mysql
-
-```
-
-**IMPORTANT** If you have problems, just list the containers running
-
-
-```
-docker ps --all
-```
-
-Which will output something like:
-
-```
-CONTAINER ID        IMAGE                                     COMMAND                  CREATED             STATUS                      PORTS                               NAMES
-63510e083689        jabc-mysql                                "docker-entrypoint.s…"   4 hours ago         Up 4 hours                  0.0.0.0:3306->3306/tcp, 33060/tcp   jabc-mysql
-51b42d1623f2        msarthur/semafor-rest:latest              "python semviz/web_a…"   3 months ago        Up 13 seconds                                                   semafor-rest
-```
-
-And then, you stop and delete the jabc-mysql container:
-
-```
-docker stop 63510e083689
-docker rm 63510e083689
-```
-
-### Project
-
-Build the project with:
-
-```
-npm run build
+docker-compose start database
 ```
 
 ### Test
 
 Import the project into Webstorm and run it there with Mocha
 
-Make sure to build before running
 
 Make sure that `database.ts` has the proper values (on mac the IP of docker is not localhost, you can obtain the correct ip running `docker-machine ip`)
 
+```
+cd backend
+npm install
+npm run build && npm run test
+```
 
-Select the test of preference, and run/debug it using **mocha**
+
+### Deploy
+
+Stop any running container
+
+```
+docker ps | grep database
+```
+```
+a7acd9a2f6e6        jabc-hr_database    "docker-entrypoint.s…"   ...
+```
+```
+docker stop a7acd9a2f6e6
+```
+
+Finally, run the docker compose:
+
+```
+docker-compose up
+```
+
+On MacOS, the application will be hosted at `192.168.99.100:49160`
+
+You can test it with cUrl
+
+```
+curl -X POST \
+  http://192.168.99.100:49160/login \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 096d7353-c78b-41f8-a58e-790b6b0c7f98' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"email": "arthur@email.com",
+    "password": "c2VjcmV0"
+}'
+```
+
+### Bundling the frontend
+
+I copied a simple frontend from [this repo](https://github.com/ericelliott/react-hello) (I will probably write one of my own later) 
+
+We want to generate a bundle of the frontend such that it can be served as a static file in the backend.
+
+First, let us build the frontend:
+
+```
+cd frontend
+npm install
+npm run build
+```
+
+Results will be under the `build` folder
+
+Let us copy everything under the build folder to the backend
+
+```
+cd ..
+cp -R frontend/build backend/src/web
+```
+
+How are the static files from the frontend served?
+
+In the backend, any static file is served at `src/app/App.ts`:
+
+```
+this.express.use(express.static(path.join(__dirname, '..', 'web')));
+```
+
+And then, we define the root endpoint to serve the root file of out bundle:
+
+IMPORTANT: The gulp task that build the project copies both the typescript files and the static files to the `dist` folder.
+If you use som other bundler, you may have to to that in some other way.
+
+
+## TODO:
+
+Create gulp task that does all the bundling:
+
+1. build front end
+1. copy build folder to `backend/src/web`
+1. run backend build
+1. run docker to generate a new image with the entire application
 
 
 ### Good luck, have fun

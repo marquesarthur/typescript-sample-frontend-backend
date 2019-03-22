@@ -31,6 +31,9 @@ class App {
         this.express.use(logger('dev'));
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({extended: false}));
+
+
+
     }
 
     // Configure API endpoints.
@@ -62,6 +65,26 @@ class App {
         router.post('/api/v1/employee', tokenValidator.check, employeeCtrl.create);
         router.post('/api/v1/employee/:id/document/:docid', tokenValidator.check, documentCtrl.upload);
         router.get('/api/v1/employee/:id/document/:docid', tokenValidator.check, documentCtrl.get);
+
+        router.get('/',  (req, res) => {
+            res.send(`
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <title>Hello</title>
+                  </head>
+                  <body>
+                    <div id="content"></div>
+            
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react.js"></script>
+                    <script src="/resources/app-client.js"></script>
+                  </body>
+                </html>
+              `);
+        });
+
+        console.log(path.join(__dirname, '..', 'web'));
+        this.express.use("/resources", express.static(path.join(__dirname, '..', 'web')));
         this.express.use('/', router);
     }
 }
